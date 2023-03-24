@@ -1,4 +1,17 @@
+using LogginServiceAPI.Extensions;
+using LogginServiceAPI.Middlewares;
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Add Serilog Initialization
+var logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(builder.Configuration)
+        .WriteTo.CustomSink()
+        .Enrich.FromLogContext()
+        .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 // Add services to the container.
 
@@ -15,6 +28,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
 
 app.UseHttpsRedirection();
 
