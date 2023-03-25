@@ -1,15 +1,20 @@
-﻿using LogginServiceAPI.Helpers;
+﻿using LogginServiceAPI.Controllers.Examples;
+using LogginServiceAPI.Helpers;
 using LogginServiceAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Serilog.Events;
 using Serilog.Parsing;
+using Swashbuckle.AspNetCore.Filters;
+using System.Collections.Generic;
 
 namespace LogginServiceAPI.Controllers
 {
     /// <summary>
     /// The logging controller is responsible for handling the remote API logging requests
     /// </summary>
+    [ApiController]
+    [Route("api/[controller]")]
     public class LoggingController : Controller
     {
         private readonly ILogger<LoggingController> _logger;
@@ -19,50 +24,35 @@ namespace LogginServiceAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] LogRequest request)
+        //[ProducesResponseType(200)]
+        //[ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [SwaggerRequestExample(typeof(LogRequest), typeof(LogModelExample))]
+        public async Task<IActionResult> Post([FromBody] LogRequest request)
         {
             if (request == null || !request.Entries.Any())
             {
                 return BadRequest("The request payload is empty or missing log entries.");
             }
 
-            var logEvents = new List<LogEvent>();
+            //await Task.Run(() => request.Entries
+            //          .ForEach(entry => _logger.Log(LogHelper.GetLogLevel(entry.LogLevel), entry.Message, 
+            //                typeof(LogEntry).GetProperties().Select(x => new LogEventProperty(x.Name, new ScalarValue(x.GetValue(entry)))))));
 
-            foreach (var entry in request.Entries)
-            {
-                //var logEvent = new LogEvent(
-                //    entry.TimeStamp ?? DateTimeOffset.UtcNow,
-                //    LogHelper.GetLogLevel(entry.LogLevel),
-                //    null,
-                //    new MessageTemplateParser().Parse(entry.Message),
-                //    new[] { new LogEventProperty("LogSource", new ScalarValue(entry.TimeStamp)),
-                //    new LogEventProperty("Message", new ScalarValue(entry.Message)),
-                //    new LogEventProperty("RequestId", new ScalarValue(entry.RequestId)),
-                //    new LogEventProperty("UserId", new ScalarValue(entry.UserId)),
-                //    new LogEventProperty("ContextData", new ScalarValue(entry.ContextData)),
-                //    new LogEventProperty("StackTrace", new ScalarValue(entry.StackTrace)),
-                //    new LogEventProperty("HostName", new ScalarValue(entry.HostName)),
-                //    new LogEventProperty("AppName", new ScalarValue(entry.AppName)),
-                //    new LogEventProperty("LogFileName", new ScalarValue(entry.LogFileName)),
-                //    new LogEventProperty("EnvironmentName", new ScalarValue(entry.EnvironmentName)),
-                //    new LogEventProperty("InstanceId", new ScalarValue(entry.InstanceId))}
-                //);
-
-                var logEvent = new LogEvent(
-                    entry.TimeStamp ?? DateTimeOffset.UtcNow,
-                    LogHelper.GetLogLevel(entry.LogLevel),
-                    null,
-                    new MessageTemplateParser().Parse(entry.Message),
-                    typeof(LogEntry).GetProperties()
-                        .Select(x => new LogEventProperty(x.Name, new ScalarValue(x.GetValue(entry)))));
-
-                //timeStamp": "",   "logLevel": "",   "logSource": "",   "message": "",   "requestId": "",   "userId": "",   "contextData": "",   "stackTrace": "",   "hostName": "",   "appName": "",   "logFileName": "",   "environmentName": "",   "instanceId
-                logEvents.Add(logEvent);
-            }
-
-            await Task.Run(() => logEvents.ForEach(Log.Logger.Write));
+            await Task.Run(() => request.Entries
+                      .ForEach(entry => _logger.Log(LogHelper.GetLogLevel(entry.LogLevel), "Client Data:{@DataObject}", entry)));
 
             return Ok();
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(LogModelExample))]
+        public async Task<IReadOnlyList<LogEntry>> Get()
+        {
+            return await Task.FromResult(new List<LogEntry>());
         }
     }
 }

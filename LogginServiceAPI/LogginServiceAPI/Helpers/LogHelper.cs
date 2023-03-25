@@ -4,22 +4,24 @@ namespace LogginServiceAPI.Helpers
 {
     public static class LogHelper
     {
-        public static LogEventLevel GetLogLevel(string level)
+        public static LogLevel GetLogLevel(string level)
         {
             switch (level?.ToLowerInvariant())
             {
+                case "trace":
+                    return LogLevel.Trace;
                 case "debug":
-                    return LogEventLevel.Debug;
+                    return LogLevel.Debug;
                 case "information":
-                    return LogEventLevel.Information;
+                    return LogLevel.Information;
                 case "warning":
-                    return LogEventLevel.Warning;
+                    return LogLevel.Warning;
                 case "error":
-                    return LogEventLevel.Error;
+                    return LogLevel.Error;
                 case "fatal":
-                    return LogEventLevel.Fatal;
+                    return LogLevel.Critical;
                 default:
-                    return LogEventLevel.Verbose;
+                    return LogLevel.None;
             }
         }
     }

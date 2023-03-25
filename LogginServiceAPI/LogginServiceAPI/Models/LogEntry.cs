@@ -2,7 +2,6 @@
 {
     public class LogEntry
     {
-        //timeStamp": "",   "logLevel": "",   "logSource": "",   "message": "",   "requestId": "",   "userId": "",   "contextData": "",   "stackTrace": "",   "hostName": "",   "appName": "",   "logFileName": "",   "environmentName": "",   "instanceId
         public string LogLevel { get; set; }
         public string LogSource { get; set; }
         public string Message { get; set; }

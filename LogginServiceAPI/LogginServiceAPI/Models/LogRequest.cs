@@ -5,6 +5,6 @@
     /// </summary>
     public class LogRequest
     {
-        public IList<LogEntry> Entries { get; set; }
+        public List<LogEntry> Entries { get; set; }
     }
 }
