@@ -1,12 +1,26 @@
 ﻿using LogginServiceAPI.Models;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace LogginServiceAPI.Controllers.Examples
 {
     public class LogModelExample : IExamplesProvider<LogRequest>
     {
+        
+
         public LogRequest GetExamples()
         {
+            var myData = new
+            {
+                Host = @"example.myhost.gr",
+                UserName = "example",
+                Password = "example",
+                SourceDir = "example/export/zip/mypath/",
+                FileName = "example.zip"
+            };
+
+            string jsonData = JsonConvert.SerializeObject(myData);
+
             return new LogRequest
             {
                 Entries = new List<LogEntry>
@@ -19,11 +33,11 @@ namespace LogginServiceAPI.Controllers.Examples
                         InstanceId = "1c3be8ed-df30-47b4-8f1e-6e68ebd01f34",
                         LogFileName = "user_service.log",
                         LogSource = "user_service.object1.method1",
-                        Message = "User {UserId} Login Error",
+                        Message = "User Login Error",
                         UserId = "user1",
                         RequestId = "1",
                         AppName = "authentication_service",
-                        ContextData = "{\"ip_address\": \"192.168.0.1\", \"url\": \"/api/users\", \"http_method\": \"GET\"}\r\n",
+                        ContextData = jsonData,
                         StackTrace = "Traceback (most recent call last):\n File 'user_service.py', line 42, in <module>\n raise ValueError('Invalid email address')\nValueError: Invalid email address"
                     },
                     new LogEntry {
@@ -34,11 +48,11 @@ namespace LogginServiceAPI.Controllers.Examples
                         InstanceId = "1c3be8ed-df30-47b4-8f1e-6e68ebd01f34",
                         LogFileName = "user_service.log",
                         LogSource = "web_service.object1.method1",
-                        Message = "Web Service {AppName} Error",
+                        Message = "Web Service Error",
                         UserId = "000",
                         RequestId = "2",
                         AppName = "authentication_service",
-                        ContextData = "{\"ip_address\": \"192.168.0.1\", \"url\": \"/api/data\", \"http_method\": \"Post\"}\r\n",
+                        ContextData = jsonData,
                         StackTrace = ""
                     }
                 }

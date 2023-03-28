@@ -8,20 +8,20 @@ namespace LogginServiceAPI.Middlewares
     /// </summary>
     public class ExceptionHandlingMiddleware
     {
-        public RequestDelegate requestDelegate;
-        private readonly ILogger<ExceptionHandlingMiddleware> logger;
+        public RequestDelegate _next;
+        private readonly ILogger<ExceptionHandlingMiddleware> _logger;
         public ExceptionHandlingMiddleware
-        (RequestDelegate requestDelegate, ILogger<ExceptionHandlingMiddleware> logger)
+            (RequestDelegate requestDelegate, ILogger<ExceptionHandlingMiddleware> logger)
         {
-            this.requestDelegate = requestDelegate;
-            this.logger = logger;
+            _next = requestDelegate;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
         {
             try
             {
-                await requestDelegate(context);
+                await _next(context);
             }
             catch (Exception ex)
             {
@@ -30,7 +30,7 @@ namespace LogginServiceAPI.Middlewares
         }
         private Task HandleException(HttpContext context, Exception ex)
         {
-            logger.LogError(ex.ToString());
+            _logger.LogError(ex.ToString());
             var errorMessageObject =
                 new { Message = ex.Message, Code = "system_error" };
 

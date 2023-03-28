@@ -2,7 +2,9 @@
 using LogginServiceAPI.Helpers;
 using LogginServiceAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Core;
 using Serilog.Events;
 using Serilog.Parsing;
 using Swashbuckle.AspNetCore.Filters;
@@ -24,8 +26,6 @@ namespace LogginServiceAPI.Controllers
         }
 
         [HttpPost]
-        //[ProducesResponseType(200)]
-        //[ProducesResponseType(400)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -34,7 +34,7 @@ namespace LogginServiceAPI.Controllers
         {
             if (request == null || !request.Entries.Any())
             {
-                return BadRequest("The request payload is empty or missing log entries.");
+                throw new Exception("The request payload is empty or missing log entries.");
             }
 
             //await Task.Run(() => request.Entries
@@ -42,7 +42,7 @@ namespace LogginServiceAPI.Controllers
             //                typeof(LogEntry).GetProperties().Select(x => new LogEventProperty(x.Name, new ScalarValue(x.GetValue(entry)))))));
 
             await Task.Run(() => request.Entries
-                      .ForEach(entry => _logger.Log(LogHelper.GetLogLevel(entry.LogLevel), "Client Data:{@DataObject}", entry)));
+                      .ForEach(entry => _logger.Log(LogHelper.GetLogLevel(entry.LogLevel), "[MessageId:{MessageID}][{@DataObject}]", Guid.NewGuid(), entry)));
 
             return Ok();
         }
