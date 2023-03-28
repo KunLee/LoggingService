@@ -1,12 +1,6 @@
 ﻿using Serilog;
 using Serilog.Sinks.TestCorrelator;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
 using Serilog.Context;
 using LogginServiceAPI.Controllers;
 using Serilog.Extensions.Logging;
@@ -18,30 +12,6 @@ namespace LoggingServiceAPI.Test.ControllersTests
 {
     public class LoggingControllerTests
     {
-
-        public static void ConfigureGlobalLogger()
-        {
-            //Log.Logger = new LoggerConfiguration().WriteTo.TestCorrelator().CreateLogger();
-            //Log.Logger = new LoggerConfiguration().WriteTo.Sink(new TestCorrelatorSink()).Enrich.FromLogContext().CreateLogger();
-        }
-
-        [Fact]
-        public void Test1()
-        {
-            using (TestCorrelator.CreateContext())
-            using (var logger = new LoggerConfiguration().WriteTo.Sink(new TestCorrelatorSink()).Enrich.FromLogContext().CreateLogger())
-            {
-                Log.Logger = logger;
-
-                Log.Information("My log message!");
-
-                TestCorrelator.GetLogEventsFromCurrentContext()
-                    .Should().ContainSingle()
-                    .Which.MessageTemplate.Text
-                    .Should().Be("My log message!");
-            }
-        }
-
         [Fact]
         public async Task WhenClientTriggerLogging_Via_RequestWithPayload_ThenMessageLogged()
         {

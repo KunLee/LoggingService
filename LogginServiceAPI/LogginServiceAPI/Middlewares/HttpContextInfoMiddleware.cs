@@ -1,4 +1,5 @@
-﻿using Serilog.Context;
+﻿using Microsoft.Extensions.Logging;
+using Serilog.Context;
 using System.Text;
 
 namespace LogginServiceAPI.Middlewares
@@ -9,9 +10,12 @@ namespace LogginServiceAPI.Middlewares
     public class HttpContextInfoMiddleware
     {
         private const string HttpRequestPropertyName = "HttpRequest";
-        readonly RequestDelegate _next;
+        private const string HttpResponsePropertyName = "HttpResponse";
+        
+        private readonly ILogger<HttpContextInfoMiddleware> _logger;
+        private readonly RequestDelegate _next;
 
-        public HttpContextInfoMiddleware(RequestDelegate next)
+        public HttpContextInfoMiddleware(RequestDelegate next, ILogger<HttpContextInfoMiddleware> logger)
         {
             if (next == null)
             {
@@ -19,6 +23,7 @@ namespace LogginServiceAPI.Middlewares
             }
 
             _next = next;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext httpContext)
@@ -31,9 +36,15 @@ namespace LogginServiceAPI.Middlewares
             var httpRequestInfo = await GetHttpRequestInfoAsync(httpContext);
 
             // Push the user name into the log context so that it is included in all log entries
+
             using (LogContext.PushProperty(HttpRequestPropertyName, httpRequestInfo, true))
             {
                 await _next(httpContext);
+                using (LogContext.PushProperty(HttpResponsePropertyName, httpContext.Response.StatusCode, true)) 
+                {
+                    LogContext.PushProperty(HttpRequestPropertyName, null, true);
+                    _logger.LogInformation("response");
+                }
             }
         }
 

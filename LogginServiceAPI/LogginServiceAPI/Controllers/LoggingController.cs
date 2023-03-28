@@ -2,13 +2,7 @@
 using LogginServiceAPI.Helpers;
 using LogginServiceAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Serilog;
-using Serilog.Core;
-using Serilog.Events;
-using Serilog.Parsing;
 using Swashbuckle.AspNetCore.Filters;
-using System.Collections.Generic;
 
 namespace LogginServiceAPI.Controllers
 {
@@ -26,33 +20,25 @@ namespace LogginServiceAPI.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerRequestExample(typeof(LogRequest), typeof(LogModelExample))]
         public async Task<IActionResult> Post([FromBody] LogRequest request)
         {
             if (request == null || !request.Entries.Any())
             {
-                throw new Exception("The request payload is empty or missing log entries.");
+                var msg = "The request payload is empty or missing log entries.";
+                _logger.LogError(msg);
+                return BadRequest(msg);
             }
 
-            //await Task.Run(() => request.Entries
-            //          .ForEach(entry => _logger.Log(LogHelper.GetLogLevel(entry.LogLevel), entry.Message, 
-            //                typeof(LogEntry).GetProperties().Select(x => new LogEventProperty(x.Name, new ScalarValue(x.GetValue(entry)))))));
-
             await Task.Run(() => request.Entries
-                      .ForEach(entry => _logger.Log(LogHelper.GetLogLevel(entry.LogLevel), "[MessageId:{MessageID}][{@DataObject}]", Guid.NewGuid(), entry)));
+                      .ForEach(entry => _logger.Log(LogHelper.GetLogLevel(entry.LogLevel), 
+                        "{MessageID}{@DataObject}", Guid.NewGuid(), entry)));
 
             return Ok();
-        }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(LogModelExample))]
-        public async Task<IReadOnlyList<LogEntry>> Get()
-        {
-            return await Task.FromResult(new List<LogEntry>());
         }
     }
 }
