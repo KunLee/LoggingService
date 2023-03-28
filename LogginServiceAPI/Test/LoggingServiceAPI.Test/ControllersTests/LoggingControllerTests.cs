@@ -35,13 +35,13 @@ namespace LoggingServiceAPI.Test.ControllersTests
                 foreach (var item in context) 
                 {
                     item.MessageTemplate.Text
-                        .Should().Be("[MessageId:{MessageID}][{@DataObject}]");
+                        .Should().Be("{MessageID}{@DataObject}");
                 }
             }
         }
 
         [Fact]
-        public async Task WhenClientTriggerLogging_Via_RequestWithEmpty_ThenExceptionThrown()
+        public async Task WhenClientTriggerLogging_Via_RequestWithEmpty_ThenLogError()
         {
             using (TestCorrelator.CreateContext())
             using (var logger = new LoggerConfiguration().WriteTo.Sink(new TestCorrelatorSink()).Enrich.FromLogContext().CreateLogger())
@@ -53,8 +53,15 @@ namespace LoggingServiceAPI.Test.ControllersTests
 
                 var controller = new LoggingController(microsoftLogger);
 
-                await Assert.ThrowsAsync<Exception>(() => controller.Post(null));
-                await Assert.ThrowsAsync<Exception>(() => controller.Post(new LogRequest { Entries = new List<LogEntry>()}));
+                controller.Post(null);
+
+                var context = TestCorrelator.GetLogEventsFromCurrentContext();
+
+                context.Should().ContainSingle().Which.Level.Should().Be(Serilog.Events.LogEventLevel.Error);
+
+                controller.Post(new LogRequest { Entries = new List<LogEntry>()});
+
+                context.Count().Should().Be(2);
             }
         }
 
