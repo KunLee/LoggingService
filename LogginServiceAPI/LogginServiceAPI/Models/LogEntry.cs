@@ -11,7 +11,6 @@
         public string? StackTrace { get; set; }
         public string? HostName { get; set; }
         public string? AppName { get; set; }
-        public string? LogFileName { get; set; }
         public string? EnvironmentName { get; set; }
         public string? InstanceId { get; set; }
         public DateTimeOffset? TimeStamp { get; set; }

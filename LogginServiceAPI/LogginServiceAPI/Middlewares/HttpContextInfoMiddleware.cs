@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Serilog.Context;
+using System.Diagnostics;
 using System.Text;
 
 namespace LogginServiceAPI.Middlewares
@@ -39,11 +40,16 @@ namespace LogginServiceAPI.Middlewares
 
             using (LogContext.PushProperty(HttpRequestPropertyName, httpRequestInfo, true))
             {
+                var stopwatch = Stopwatch.StartNew();
+
                 await _next(httpContext);
+
+                stopwatch.Stop();
+
                 using (LogContext.PushProperty(HttpResponsePropertyName, httpContext.Response.StatusCode, true)) 
                 {
                     LogContext.PushProperty(HttpRequestPropertyName, null, true);
-                    _logger.LogInformation("response");
+                    _logger.LogInformation("{duration}ms", (int)Math.Ceiling(stopwatch.Elapsed.TotalMilliseconds));
                 }
             }
         }

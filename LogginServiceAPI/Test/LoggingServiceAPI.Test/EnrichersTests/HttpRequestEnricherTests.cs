@@ -40,6 +40,7 @@ namespace LoggingServiceAPI.Test.EnrichersTests
                         new LogEventProperty("aname1", new ScalarValue("avalue")),
                         new LogEventProperty("aname2", new ScalarValue(42))
                     });
+
             _enricher.Enrich(logEvent, _propertyFactory.Object);
 
             Assert.Equal(2, logEvent.Properties.Count);

@@ -1,6 +1,10 @@
 using LogginServiceAPI.Enrichers;
 using LogginServiceAPI.Extensions;
 using LogginServiceAPI.Middlewares;
+using LogginServiceAPI.Models;
+using LogginServiceAPI.Models.Utilities;
+using LogginServiceAPI.Services;
+using Microsoft.Extensions.DependencyModel;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
@@ -57,6 +61,8 @@ builder.Services.AddSwaggerGen(c => {
 builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetExecutingAssembly());
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddSingleton<IMessageUtilities<LogRequest>, LogMessageUtilities>();
+builder.Services.AddSingleton<ILoggingService, LoggingService>();
 
 try
 {

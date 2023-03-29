@@ -7,11 +7,22 @@ using Serilog.Extensions.Logging;
 using Microsoft.Extensions.Logging;
 using LogginServiceAPI.Controllers.Examples;
 using LogginServiceAPI.Models;
+using LogginServiceAPI.Services;
+using LogginServiceAPI.Models.Utilities;
+using Moq;
 
 namespace LoggingServiceAPI.Test.ControllersTests
 {
     public class LoggingControllerTests
     {
+        private Mock<IMessageUtilities<LogRequest>> _messageUtilities;
+        public LoggingControllerTests()
+        {
+            _messageUtilities = new Mock<IMessageUtilities<LogRequest>>();
+            _messageUtilities.Setup(x => x.Validate(It.IsAny<LogRequest>())).Returns(true);
+            _messageUtilities.Setup(x => x.Encrypt(It.IsAny<LogRequest>())).Returns<LogRequest>((request) => request);
+        }
+
         [Fact]
         public async Task WhenClientTriggerLogging_Via_RequestWithPayload_ThenMessageLogged()
         {
@@ -21,9 +32,11 @@ namespace LoggingServiceAPI.Test.ControllersTests
                 Log.Logger = logger;
 
                 var microsoftLogger = new SerilogLoggerFactory(logger)
-                                            .CreateLogger<LoggingController>();
+                                            .CreateLogger<LoggingService>();
 
-                var controller = new LoggingController(microsoftLogger);
+                var logginService = new LoggingService(microsoftLogger, _messageUtilities.Object);
+
+                var controller = new LoggingController(logginService);
 
                 var request = new LogModelExample().GetExamples();
 
@@ -49,17 +62,19 @@ namespace LoggingServiceAPI.Test.ControllersTests
                 Log.Logger = logger;
 
                 var microsoftLogger = new SerilogLoggerFactory(logger)
-                                            .CreateLogger<LoggingController>();
+                                            .CreateLogger<LoggingService>();
 
-                var controller = new LoggingController(microsoftLogger);
+                var logginService = new LoggingService(microsoftLogger, _messageUtilities.Object);
 
-                controller.Post(null);
+                var controller = new LoggingController(logginService);
+
+                await controller.Post(null);
 
                 var context = TestCorrelator.GetLogEventsFromCurrentContext();
 
                 context.Should().ContainSingle().Which.Level.Should().Be(Serilog.Events.LogEventLevel.Error);
 
-                controller.Post(new LogRequest { Entries = new List<LogEntry>()});
+                await controller.Post(new LogRequest { Entries = new List<LogEntry>()});
 
                 context.Count().Should().Be(2);
             }

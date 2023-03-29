@@ -1,8 +1,10 @@
 ﻿using LogginServiceAPI.Controllers.Examples;
 using LogginServiceAPI.Helpers;
 using LogginServiceAPI.Models;
+using LogginServiceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
+using System.Reflection;
 
 namespace LogginServiceAPI.Controllers
 {
@@ -13,10 +15,10 @@ namespace LogginServiceAPI.Controllers
     [Route("api/[controller]")]
     public class LoggingController : Controller
     {
-        private readonly ILogger<LoggingController> _logger;
-        public LoggingController(ILogger<LoggingController> logger)
+        private readonly ILoggingService _loggingService;
+        public LoggingController(ILoggingService loggingService)
         {
-            _logger = logger;
+            _loggingService = loggingService;
         }
 
         [HttpPost]
@@ -27,18 +29,9 @@ namespace LogginServiceAPI.Controllers
         [SwaggerRequestExample(typeof(LogRequest), typeof(LogModelExample))]
         public async Task<IActionResult> Post([FromBody] LogRequest request)
         {
-            if (request == null || !request.Entries.Any())
-            {
-                var msg = "The request payload is empty or missing log entries.";
-                _logger.LogError(msg);
-                return BadRequest(msg);
-            }
+            var result = await _loggingService.Log(request);
 
-            await Task.Run(() => request.Entries
-                      .ForEach(entry => _logger.Log(LogHelper.GetLogLevel(entry.LogLevel), 
-                        "{MessageID}{@DataObject}", Guid.NewGuid(), entry)));
-
-            return Ok();
+            return result ? Ok() : BadRequest("The request message is not valid.");
         }
     }
 }
