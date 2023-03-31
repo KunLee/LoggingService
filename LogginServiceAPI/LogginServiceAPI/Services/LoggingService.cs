@@ -21,6 +21,7 @@ namespace LogginServiceAPI.Services
                 _logger.LogError("The request payload is empty or missing log entries.");
                 return false;
             }
+
             var encryptedMessage = _logMessageUtilities.Encrypt(message);
 
             await Task.Run(() => encryptedMessage.Entries
