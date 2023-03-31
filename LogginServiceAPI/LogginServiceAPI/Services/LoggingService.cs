@@ -18,8 +18,7 @@ namespace LogginServiceAPI.Services
         {
             if (message == null || !message.Entries.Any())
             {
-                var msg = "The request payload is empty or missing log entries.";
-                _logger.LogError(msg);
+                _logger.LogError("The request payload is empty or missing log entries.");
                 return false;
             }
             var encryptedMessage = _logMessageUtilities.Encrypt(message);
