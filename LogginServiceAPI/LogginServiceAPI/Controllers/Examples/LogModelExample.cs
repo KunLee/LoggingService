@@ -34,7 +34,6 @@ namespace LogginServiceAPI.Controllers.Examples
                         LogSource = "user_service.object1.method1",
                         Message = "User Login Error",
                         UserId = "user1",
-                        RequestId = "1",
                         AppName = "authentication_service",
                         ContextData = jsonData,
                         StackTrace = "Traceback (most recent call last):\n File 'user_service.py', line 42, in <module>\n raise ValueError('Invalid email address')\nValueError: Invalid email address"
@@ -48,7 +47,6 @@ namespace LogginServiceAPI.Controllers.Examples
                         LogSource = "web_service.object1.method1",
                         Message = "Web Service Error",
                         UserId = "000",
-                        RequestId = "2",
                         AppName = "authentication_service",
                         ContextData = jsonData,
                         StackTrace = ""

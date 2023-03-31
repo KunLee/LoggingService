@@ -1,4 +1,5 @@
-﻿using NETCore.Encrypt;
+﻿using LogginServiceAPI.Helpers;
+using NETCore.Encrypt;
 
 namespace LogginServiceAPI.Models.Utilities
 {
@@ -16,12 +17,13 @@ namespace LogginServiceAPI.Models.Utilities
         public LogRequest Encrypt(LogRequest request)
         {
             var key = _config["AES:Key"];
-            key = "wL6vLUGeM3nZFmr5dI8YVeLxVnlUWL5V";
 
-            foreach (var item in request.Entries) {
-                var iv = new Random().Next(16).ToString();
-                iv = "1111111111111111";
-                if (!String.IsNullOrEmpty(item.UserId)) {
+            foreach (var item in request.Entries) 
+            {
+                var iv = MessageHelper.RandomString(16);
+
+                if (!String.IsNullOrEmpty(item.UserId)) 
+                {
                     item.UserId = EncryptProvider.AESEncrypt($"{item.UserId}{iv}", key, iv);
                 }
 
