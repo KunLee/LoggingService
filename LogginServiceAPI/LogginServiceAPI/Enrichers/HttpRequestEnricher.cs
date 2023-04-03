@@ -28,7 +28,7 @@ namespace LogginServiceAPI.Enrichers
             if (_httpContextAccessor.HttpContext?.Request == null)
                 return;
 
-            var userHostName = _httpContextAccessor.HttpContext?.Request.Host.ToString();
+            var userHostName = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
 
             var userName = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
 
