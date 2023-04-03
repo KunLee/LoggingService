@@ -34,7 +34,7 @@ namespace LogginServiceAPI.Enrichers
 
             if (!string.IsNullOrWhiteSpace(userClientIp)) 
             {
-                var httpRequestClientHostnameProperty = new LogEventProperty(HttpRequestClientHostNamePropertyName, new ScalarValue(userHostName));
+                var httpRequestClientHostnameProperty = new LogEventProperty(HttpRequestClientHostNamePropertyName, new ScalarValue(userClientIp));
                 logEvent.AddPropertyIfAbsent(httpRequestClientHostnameProperty);
             }
 
