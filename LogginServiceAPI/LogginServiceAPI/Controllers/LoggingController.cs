@@ -4,7 +4,7 @@ using LogginServiceAPI.Models;
 using LogginServiceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
-using System.Reflection;
+using System.Net.Mime;
 
 namespace LogginServiceAPI.Controllers
 {
@@ -22,6 +22,8 @@ namespace LogginServiceAPI.Controllers
         }
 
         [HttpPost]
+        [Produces(MediaTypeNames.Application.Json)]
+        [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
