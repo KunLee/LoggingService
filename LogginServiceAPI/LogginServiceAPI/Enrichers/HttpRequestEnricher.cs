@@ -8,7 +8,7 @@ namespace LogginServiceAPI.Enrichers
         /// <summary>
         /// The property name added to enriched log events.
         /// </summary>
-        public const string HttpRequestClientHostNamePropertyName = "HttpRequestClientHostName";
+        public const string HttpRequestClientHostNamePropertyName = "HttpRequestClientIp";
         public const string HttpRequestClientUserNamePropertyName = "HttpRequestClientUserName";
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -28,11 +28,11 @@ namespace LogginServiceAPI.Enrichers
             if (_httpContextAccessor.HttpContext?.Request == null)
                 return;
 
-            var userHostName = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
+            var userClientIp = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
 
             var userName = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
 
-            if (!string.IsNullOrWhiteSpace(userHostName)) 
+            if (!string.IsNullOrWhiteSpace(userClientIp)) 
             {
                 var httpRequestClientHostnameProperty = new LogEventProperty(HttpRequestClientHostNamePropertyName, new ScalarValue(userHostName));
                 logEvent.AddPropertyIfAbsent(httpRequestClientHostnameProperty);

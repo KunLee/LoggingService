@@ -1,14 +1,10 @@
 ﻿using Moq;
 using Serilog.Core;
 using LogginServiceAPI.Enrichers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Serilog.Events;
 using Serilog.Parsing;
 using Microsoft.AspNetCore.Http;
+using System.Net;
 
 namespace LoggingServiceAPI.Test.EnrichersTests
 {
@@ -45,7 +41,7 @@ namespace LoggingServiceAPI.Test.EnrichersTests
 
             Assert.Equal(2, logEvent.Properties.Count);
 
-            _httpContextAccessor.HttpContext.Request.Host = new HostString("localhost");
+            _httpContextAccessor.HttpContext.Connection.RemoteIpAddress = IPAddress.Any;
 
             _enricher.Enrich(logEvent, _propertyFactory.Object);
 

@@ -6,8 +6,6 @@ namespace LogginServiceAPI.Controllers.Examples
 {
     public class LogModelExample : IExamplesProvider<LogRequest>
     {
-        
-
         public LogRequest GetExamples()
         {
             var myData = new
