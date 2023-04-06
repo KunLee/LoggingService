@@ -1,10 +1,13 @@
 ﻿using LogginServiceAPI.Controllers.Examples;
+using LogginServiceAPI.Exceptions;
 using LogginServiceAPI.Helpers;
 using LogginServiceAPI.Models;
 using LogginServiceAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 using System.Net.Mime;
+using System.Reflection;
+using System.Resources;
 
 namespace LogginServiceAPI.Controllers
 {
@@ -33,7 +36,9 @@ namespace LogginServiceAPI.Controllers
         {
             var result = await _loggingService.Log(request);
 
-            return result ? Ok() : BadRequest("The request message is not valid.");
+            return result ? Ok() : 
+                BadRequest(new ResourceManager($"LogginServiceAPI.Resources.Strings", 
+                    typeof(LoggingController).Assembly).GetString(nameof(BadRequest)));
         }
     }
 }

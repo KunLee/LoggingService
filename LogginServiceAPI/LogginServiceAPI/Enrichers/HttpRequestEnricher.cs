@@ -23,7 +23,7 @@ namespace LogginServiceAPI.Enrichers
 
         public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
         {
-            if (logEvent == null) throw new ArgumentNullException("logEvent");
+            if (logEvent == null) throw new ArgumentNullException(nameof(logEvent));
 
             if (_httpContextAccessor.HttpContext?.Request == null)
                 return;
