@@ -1,6 +1,6 @@
 ﻿using Moq;
 using Serilog.Core;
-using LogginServiceAPI.Enrichers;
+using LoggingServiceAPI.Enrichers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,0 +1,160 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Logging API",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/Logging": {
+      "post": {
+        "tags": [
+          "Logging"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogRequest"
+              },
+              "example": {"entries":[{"logLevel":"warning","logSource":"user_service.object1.method1","message":"User Login Error","userId":"user1","contextData":"{\"Host\":\"example.myhost.gr\",\"UserName\":\"example\",\"Password\":\"example\",\"SourceDir\":\"example/export/zip/mypath/\",\"FileName\":\"example.zip\"}","stackTrace":"Traceback (most recent call last):\n File 'user_service.py', line 42, in <module>\n raise ValueError('Invalid email address')\nValueError: Invalid email address","hostName":"localhost","appName":"authentication_service","environmentName":"dev","instanceId":"1c3be8ed-df30-47b4-8f1e-6e68ebd01f34","timeStamp":"2023-04-13T17:17:41.8972422+08:00"},{"logLevel":"error","logSource":"web_service.object1.method1","message":"Web Service Error","userId":"000","contextData":"{\"Host\":\"example.myhost.gr\",\"UserName\":\"example\",\"Password\":\"example\",\"SourceDir\":\"example/export/zip/mypath/\",\"FileName\":\"example.zip\"}","stackTrace":"","hostName":"WebServer1","appName":"authentication_service","environmentName":"prod","instanceId":"1c3be8ed-df30-47b4-8f1e-6e68ebd01f34","timeStamp":"2023-04-13T17:17:41.8972899+08:00"}]}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LogEntry": {
+        "type": "object",
+        "properties": {
+          "logLevel": {
+            "maxLength": 11,
+            "type": "string",
+            "nullable": true
+          },
+          "logSource": {
+            "maxLength": 50,
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "maxLength": 2000,
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "maxLength": 50,
+            "type": "string",
+            "nullable": true
+          },
+          "contextData": {
+            "maxLength": 5000,
+            "type": "string",
+            "nullable": true
+          },
+          "stackTrace": {
+            "maxLength": 5000,
+            "type": "string",
+            "nullable": true
+          },
+          "hostName": {
+            "maxLength": 150,
+            "type": "string",
+            "nullable": true
+          },
+          "appName": {
+            "maxLength": 150,
+            "type": "string",
+            "nullable": true
+          },
+          "environmentName": {
+            "maxLength": 150,
+            "type": "string",
+            "nullable": true
+          },
+          "instanceId": {
+            "maxLength": 150,
+            "type": "string",
+            "nullable": true
+          },
+          "timeStamp": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LogRequest": {
+        "type": "object",
+        "properties": {
+          "entries": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LogEntry"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      }
+    }
+  }
+}

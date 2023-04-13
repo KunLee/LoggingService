@@ -1,6 +1,6 @@
 ﻿using Moq;
 using Serilog.Core;
-using LogginServiceAPI.Enrichers;
+using LoggingServiceAPI.Enrichers;
 using Serilog.Events;
 using Serilog.Parsing;
 using Microsoft.AspNetCore.Http;

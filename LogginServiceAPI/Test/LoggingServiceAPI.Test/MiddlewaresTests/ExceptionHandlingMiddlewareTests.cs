@@ -1,7 +1,7 @@
 ﻿using Serilog.Sinks.TestCorrelator;
 using Serilog;
 using FluentAssertions;
-using LogginServiceAPI.Middlewares;
+using LoggingServiceAPI.Middlewares;
 using Serilog.Extensions.Logging;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;

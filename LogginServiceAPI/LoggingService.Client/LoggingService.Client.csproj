@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="6.10.0" />
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="7.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.18.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <OpenApiReference Include="OpenAPIs\swagger.json" CodeGenerator="NSwagCSharp" Namespace="LoggingService.Client.References" ClassName="LoggingService">
+      <SourceUri>https://localhost:7185/swagger/v1/swagger.json</SourceUri>
+      <Options>/UseBaseUrl:false /GenerateClientInterfaces:true /GenerateExceptionClasses:true</Options>
+    </OpenApiReference>
+  </ItemGroup>
+</Project>

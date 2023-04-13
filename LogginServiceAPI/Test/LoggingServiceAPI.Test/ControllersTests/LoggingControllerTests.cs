@@ -2,13 +2,13 @@
 using Serilog.Sinks.TestCorrelator;
 using FluentAssertions;
 using Serilog.Context;
-using LogginServiceAPI.Controllers;
+using LoggingServiceAPI.Controllers;
 using Serilog.Extensions.Logging;
 using Microsoft.Extensions.Logging;
-using LogginServiceAPI.Controllers.Examples;
-using LogginServiceAPI.Models;
-using LogginServiceAPI.Services;
-using LogginServiceAPI.Models.Utilities;
+using LoggingServiceAPI.Controllers.Examples;
+using LoggingServiceAPI.Models;
+using LoggingServiceAPI.Services;
+using LoggingServiceAPI.Models.Utilities;
 using Moq;
 
 namespace LoggingServiceAPI.Test.ControllersTests
