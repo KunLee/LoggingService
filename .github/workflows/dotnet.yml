@@ -21,8 +21,8 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore LogginServiceAPI/LoggingServiceAPI.sln
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build LogginServiceAPI/LoggingServiceAPI.sln --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test LogginServiceAPI/LoggingServiceAPI.sln --no-build --verbosity normal
