@@ -1,4 +1,5 @@
-﻿using LoggingService.Client.LoggingService.Models;
+﻿using LoggingService.Client.Helpers;
+using LoggingService.Client.LoggingService.Models;
 using LoggingService.Client.References;
 using Microsoft.Extensions.Logging;
 
@@ -43,8 +44,15 @@ namespace LoggingService.Client.LoggingService
             catch (Exception e) 
             {
                 _logger.LogError(e, $"Error calling External API - '{nameof(_loggingService)}'");
+                await LoggingToLocal(getLogRequest);
                 return false;
             }
+        }
+        public async Task LoggingToLocal(GetLogRequest clientLogRequest)
+        {
+            await Task.Run(() => clientLogRequest
+                        .Entries?.ForEach(entry => _logger.Log(LogHelper.GetLogLevel(entry.LogLevel),
+                        "{MessageID}{@DataObject}", Guid.NewGuid(), entry)));
         }
     }
 }

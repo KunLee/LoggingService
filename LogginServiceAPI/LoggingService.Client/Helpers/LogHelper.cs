@@ -1,6 +1,6 @@
-﻿using Serilog.Events;
+﻿using Microsoft.Extensions.Logging;
 
-namespace LoggingServiceAPI.Helpers
+namespace LoggingService.Client.Helpers
 {
     public static class LogHelper
     {
